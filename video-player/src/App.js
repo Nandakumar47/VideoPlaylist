@@ -1,15 +1,21 @@
 import "./App.css";
 import CustomVideoPlayer from "./Components/CustomVideoPlayer";
+import NavBar from "./Components/NavBar";
 import Playlist from "./Components/Playlist";
-
+import VideoFooter from "./Components/VideoFooter";
+import { mediaJSON } from "./Constants";
 function App() {
   return (
-    <div className="videoPlayer grid grid-cols-12">
-      <div className="col-span-4 md:col-span-9 bg-gray-200">
-        <CustomVideoPlayer />
-      </div>
-      <div className="col-span-8 md:col-span-3 bg-gray-300">
-        <Playlist />
+    <div>
+      <NavBar />
+      <div className="videoPlayer grid grid-cols-12 gap-8 p-7">
+        <div className="col-span-12   md:col-span-8">
+          <CustomVideoPlayer />
+          <VideoFooter />
+        </div>
+        <div className="col-span-12  md:col-span-4 ">
+          <Playlist />
+        </div>
       </div>
     </div>
   );

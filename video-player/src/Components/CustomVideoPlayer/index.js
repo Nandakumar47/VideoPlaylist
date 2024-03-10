@@ -1,16 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import PauseIcon from "@mui/icons-material/Pause";
-import VolumeUpIcon from "@mui/icons-material/VolumeUp";
-const VideoPLayerOuterDiv = styled.div({
-  //   display: "flex",
-});
-const VideoController = styled.div({
-  display: "flex",
-  alignItems: "center",
-  height: "40px",
-});
+
+import VideoController from "./VideoController";
+const VideoPLayerOuterDiv = styled.div((props) => ({
+  //   background: "transparent",
+  //   zIndex: 9999,
+  //   position: "relative",
+  //   ...(props.isFull && {
+  //     width: "100vw",
+  //     height: "100vh",
+  //     zIndex: 9999,
+  //     position: "relative",
+  //   }),
+  borderRadius: "16px",
+  // background: "#ffffff",
+  // boxShadow: "20px 20px 56px #d9d9d9, -20px -20px 56px #ffffff",
+  border: "1px solid lightgrey",
+  padding: "16px",
+  paddingBottom: "8px",
+}));
+
 const VideoOuterDiv = styled.div({
   position: "relative",
 });
@@ -18,11 +27,13 @@ const VideoOuterDiv = styled.div({
 const CustomVideoPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const videoRef = useRef();
+  const outerDivRef = useRef();
   const [currentTime, setCurrentTime] = useState(0);
   const [speed, setSpeed] = useState("1");
   const [showVolumeBar, setShowVolumeBar] = useState(false);
   const [volume, setVolume] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   useEffect(() => {
     const video = videoRef.current;
 
@@ -57,41 +68,6 @@ const CustomVideoPlayer = () => {
     }
     videoRef.current.play();
   };
-  // Helper function to format time in seconds to HH:MM:SS format
-  const formatTime = (timeInSeconds) => {
-    const hours = Math.floor(timeInSeconds / 3600);
-    const minutes = Math.floor((timeInSeconds % 3600) / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-
-    let formattedTime = "";
-
-    if (hours > 0) {
-      formattedTime += `${hours}:`;
-    }
-
-    if (minutes < 10 && hours > 0) {
-      formattedTime += `0${minutes}:`;
-    } else {
-      formattedTime += `${minutes}:`;
-    }
-
-    if (seconds < 10) {
-      formattedTime += `0${seconds}`;
-    } else {
-      formattedTime += `${seconds}`;
-    }
-
-    if (hours === 0 && minutes === 0) {
-      formattedTime = `0.${padNumber(seconds)}`;
-    }
-
-    return formattedTime;
-  };
-
-  // Helper function to pad single digit numbers with leading zeros
-  const padNumber = (number) => {
-    return number.toString().padStart(2, "0");
-  };
   const handleSpeedChange = (e) => {
     setSpeed(e.target.value);
     videoRef.current.playbackRate = Number(e.target.value);
@@ -104,7 +80,6 @@ const CustomVideoPlayer = () => {
   };
   const handleVolumeChange = (evt) => {
     setVolume(evt.target.value);
-    debugger;
     if (videoRef.current) {
       if (isMuted) {
         setIsMuted(false);
@@ -112,99 +87,56 @@ const CustomVideoPlayer = () => {
       videoRef.current.volume = parseFloat(evt.target.value);
     }
   };
+  const toggleFullScreen = () => {
+    if (outerDivRef.current) {
+      if (!document.fullscreenElement) {
+        setIsFullScreen(true);
+        outerDivRef.current.requestFullscreen().catch((err) => {
+          console.log(
+            `Error attempting to enable full-screen mode: ${err.message}`
+          );
+        });
+      } else {
+        if (document.exitFullscreen) {
+          setIsFullScreen(false);
+
+          document.exitFullscreen();
+        }
+      }
+    }
+  };
   return (
-    <VideoPLayerOuterDiv>
+    <VideoPLayerOuterDiv ref={outerDivRef} $isFull={isFullScreen}>
       <VideoOuterDiv>
         <video
           width="100%"
-          height="400px"
+          height="100%"
           ref={videoRef}
-          autoPlay
           muted={isMuted}
           onClick={() => {
             isPlaying ? handlePause() : handlePlay();
           }}
         >
           <source
-            src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
+            src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4"
             type="video/mp4"
           />
         </video>
       </VideoOuterDiv>
-      <VideoController>
-        {isPlaying ? (
-          <button onClick={handlePause}>
-            <PauseIcon style={{ cursor: "pointer" }} />
-          </button>
-        ) : (
-          <button onClick={handlePlay}>
-            <PlayArrowIcon style={{ cursor: "pointer" }} />
-          </button>
-        )}
-        <input
-          type="range"
-          id="vol"
-          name="vol"
-          min="0"
-          value={currentTime || 0}
-          max={videoRef.current ? videoRef.current.duration : 0}
-          style={{ flexBasis: "100%", cursor: "pointer" }}
-          onChange={handleSeek}
-        />
-        <p>
-          {formatTime(currentTime)}/
-          {formatTime(videoRef?.current ? videoRef.current.duration : 0)}
-        </p>
-        <div
-          style={{ position: "relative" }}
-          onMouseLeave={() => {
-            setShowVolumeBar(false);
-          }}
-        >
-          <button onMouseEnter={() => setShowVolumeBar(true)}>
-            <VolumeUpIcon />
-          </button>
-          {showVolumeBar ? (
-            <div
-              style={{
-                padding: "8px",
-              }}
-            >
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                defaultValue="1"
-                value={volume}
-                style={{ cursor: "pointer" }}
-                onChange={handleVolumeChange}
-              />
-            </div>
-          ) : null}
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <label htmlFor="speed">Speed:</label>
-          <select
-            name="speed"
-            id="speed"
-            value={speed}
-            style={{ background: "none" }}
-            onChange={handleSpeedChange}
-          >
-            <option value="0.5">0.5x</option>
-            <option value="0.75">0.75x</option>
-            <option value="1">Normal</option>
-            <option value="1.25">1.25x</option>
-            <option value="1.50">1.50x</option>
-          </select>
-        </div>
-      </VideoController>
+      <VideoController
+        duration={videoRef.current ? videoRef.current.duration : 0}
+        isPlaying={isPlaying}
+        handlePause={handlePause}
+        handlePlay={handlePlay}
+        currentTime={currentTime}
+        setShowVolumeBar={setShowVolumeBar}
+        showVolumeBar={showVolumeBar}
+        volume={volume}
+        handleVolumeChange={handleVolumeChange}
+        handleSpeedChange={handleSpeedChange}
+        speed={speed}
+        handleSeek={handleSeek}
+      />
     </VideoPLayerOuterDiv>
   );
 };
