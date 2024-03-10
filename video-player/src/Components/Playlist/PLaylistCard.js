@@ -29,9 +29,10 @@ function PLaylistCard(props) {
               justifyContent: "center",
               alignItems: "center",
               zIndex: 1,
+              color: "white",
             }}
           >
-            playing
+            Playing
           </div>
         ) : (
           <span

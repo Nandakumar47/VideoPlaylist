@@ -90,6 +90,10 @@ const Playlist = () => {
                             ref={provided.innerRef}
                           >
                             <PLaylistCard
+                              isPlaying={
+                                video.title === state?.selectedVideo?.title ||
+                                false
+                              }
                               title={video.title}
                               subtitle={video.subtitle}
                               thumb={baseUrl + video.thumb}
