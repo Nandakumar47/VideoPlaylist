@@ -3,7 +3,6 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
 function PLaylistCard(props) {
   const { title, description, subtitle, thumb, isPlaying, index } = props;
-  const [isMouseAbove, setIsMouseAbove] = useState(false);
   return (
     <div
       style={{
@@ -12,12 +11,6 @@ function PLaylistCard(props) {
         marginBottom: "8px",
       }}
       id={title}
-      onMouseEnter={() => {
-        setIsMouseAbove(true);
-      }}
-      onMouseLeave={() => {
-        setIsMouseAbove(false);
-      }}
     >
       {/* <div>{isMouseAbove ? <DragHandleIcon /> : <p>{index + 1}</p>}</div> */}
       <div style={{ width: "140px", position: "relative" }}>
@@ -65,10 +58,12 @@ function PLaylistCard(props) {
           width: "160px",
         }}
       >
-        <h2 style={{ fontWeight: "600" }} className="md:text-sm sm:text-xs">
+        <h2 style={{ fontWeight: "600" }} className="md:text-base sm:text-xs">
           {title}
         </h2>
-        <p style={{ fontSize: "0.8rem" }}>{subtitle}</p>
+        <p style={{ color: "grey" }} className="text-xs">
+          {subtitle}
+        </p>
       </div>
     </div>
   );

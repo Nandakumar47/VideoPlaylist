@@ -1,12 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PLaylistCard from "./PLaylistCard";
 import { mediaJSON } from "../../Constants";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { useVideoPlayerContext } from "../Context/store";
+import { setSelectedVideo } from "../Context";
 const Playlist = () => {
   const baseUrl =
     "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/";
   const videos = mediaJSON.categories[0].videos;
   const [playlists, setPlaylists] = useState(videos);
+  const { state, dispatch } = useVideoPlayerContext();
+  useEffect(() => {
+    //set default value to context
+    setSelectedVideo(dispatch, videos[0]);
+  }, []);
   const handleOnDragEnd = (result) => {
     if (!result.destination) {
       return;
@@ -75,6 +82,9 @@ const Playlist = () => {
                       >
                         {(provided) => (
                           <li
+                            onClick={() => {
+                              setSelectedVideo(dispatch, video);
+                            }}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                             ref={provided.innerRef}

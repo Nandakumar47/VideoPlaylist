@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import VideoController from "./VideoController";
+import { useVideoPlayerContext } from "../Context/store";
 const VideoPLayerOuterDiv = styled.div((props) => ({
   //   background: "transparent",
   //   zIndex: 9999,
@@ -34,25 +35,22 @@ const CustomVideoPlayer = () => {
   const [volume, setVolume] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [showVolume, setShowVolume] = useState(true);
+  const { state, dispatch } = useVideoPlayerContext();
+
   useEffect(() => {
     const video = videoRef.current;
-
     const handleTimeUpdate = () => {
       setCurrentTime(video.currentTime);
     };
 
-    if (video) {
-      handlePlay();
-      video.volume = 0;
-      video.addEventListener("timeupdate", handleTimeUpdate);
-    }
+    video.volume = 0;
+    video.addEventListener("timeupdate", handleTimeUpdate);
 
     return () => {
-      if (video) {
-        video.removeEventListener("timeupdate", handleTimeUpdate);
-      }
+      video.removeEventListener("timeupdate", handleTimeUpdate);
     };
-  }, []);
+  }, [videoRef, state.selectedVideo]);
   useEffect(() => {
     const handleKeyPress = (evt) => {
       switch (evt.code) {
@@ -92,7 +90,17 @@ const CustomVideoPlayer = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [isPlaying]);
+  }, [isPlaying, state.selectedVideo]);
+  useEffect(() => {
+    setShowVolume(true);
+    const handleVolumeChange = () => {
+      setShowVolume(false);
+    };
+    const id = setTimeout(handleVolumeChange, 500);
+    return () => {
+      clearTimeout(id);
+    };
+  }, [volume]);
   const handlePause = () => {
     setIsPlaying(false);
     if (showVolumeBar) {
@@ -144,20 +152,70 @@ const CustomVideoPlayer = () => {
       }
     }
   };
+
   return (
     <VideoPLayerOuterDiv ref={outerDivRef} $isFull={isFullScreen}>
       <VideoOuterDiv>
+        {showVolume ? (
+          <span
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "60px",
+              height: "40px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              border: "none",
+              color: "white",
+            }}
+          >
+            <span
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                opacity: 0.5,
+                background: "black",
+              }}
+            ></span>
+            <p
+              style={{
+                opacity: 1,
+                position: "relative",
+                zIndex: 1,
+                color: "white",
+              }}
+            >
+              {Math.round((volume / 1) * 100)}%
+            </p>
+          </span>
+        ) : null}
         <video
+          key={
+            state?.selectedVideo?.sources?.length
+              ? state?.selectedVideo?.sources[0]
+              : ""
+          }
           width="100%"
           height="100%"
           ref={videoRef}
           muted={isMuted}
+          autoPlay
           onClick={() => {
             isPlaying ? handlePause() : handlePlay();
           }}
         >
           <source
-            src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4"
+            src={
+              state?.selectedVideo?.sources?.length
+                ? state?.selectedVideo?.sources[0]
+                : ""
+            }
             type="video/mp4"
           />
         </video>
