@@ -43,7 +43,7 @@ const CustomVideoPlayer = () => {
     const handleTimeUpdate = () => {
       setCurrentTime(video.currentTime);
     };
-
+    setIsPlaying(true);
     video.volume = 0;
     video.addEventListener("timeupdate", handleTimeUpdate);
 
