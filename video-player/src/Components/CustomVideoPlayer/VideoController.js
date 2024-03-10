@@ -48,7 +48,7 @@ const VideoController = (props) => {
         id="vol"
         name="vol"
         min="0"
-        value={currentTime || 0}
+        value={currentTime}
         max={duration}
         style={{ flexBasis: "100%", cursor: "pointer" }}
         onChange={handleSeek}

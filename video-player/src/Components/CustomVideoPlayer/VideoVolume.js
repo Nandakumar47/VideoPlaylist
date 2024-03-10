@@ -25,7 +25,6 @@ function VideoVolume(props) {
             min="0"
             max="1"
             step="0.01"
-            defaultValue="1"
             value={volume}
             style={{ cursor: "pointer", transition: "all 0.3s ease-out" }}
             onChange={handleVolumeChange}

@@ -43,6 +43,7 @@ const CustomVideoPlayer = () => {
 
     if (video) {
       handlePlay();
+      video.volume = 0;
       video.addEventListener("timeupdate", handleTimeUpdate);
     }
 
@@ -52,7 +53,46 @@ const CustomVideoPlayer = () => {
       }
     };
   }, []);
+  useEffect(() => {
+    const handleKeyPress = (evt) => {
+      switch (evt.code) {
+        case "Space":
+          evt.preventDefault();
+          isPlaying ? handlePause() : handlePlay();
+          break;
+        case "ArrowRight":
+          evt.preventDefault();
+          videoRef.current.currentTime += 5;
+          break;
+        case "ArrowLeft":
+          evt.preventDefault();
+          videoRef.current.currentTime -= 5;
+          break;
+        case "ArrowUp":
+          evt.preventDefault();
+          if (videoRef.current.volume + 0.01 < 1) {
+            setIsMuted(false);
+            videoRef.current.volume += 0.01;
+            setVolume(videoRef.current.volume + 0.01);
+          }
+          break;
+        case "ArrowDown":
+          evt.preventDefault();
+          if (videoRef.current.volume - 0.01 > 0) {
+            videoRef.current.volume -= 0.01;
+            setVolume(videoRef.current.volume - 0.01);
+          }
+          break;
+        default:
+          break;
+      }
+    };
+    document.addEventListener("keydown", handleKeyPress);
 
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [isPlaying]);
   const handlePause = () => {
     setIsPlaying(false);
     if (showVolumeBar) {
@@ -99,7 +139,6 @@ const CustomVideoPlayer = () => {
       } else {
         if (document.exitFullscreen) {
           setIsFullScreen(false);
-
           document.exitFullscreen();
         }
       }
@@ -124,7 +163,7 @@ const CustomVideoPlayer = () => {
         </video>
       </VideoOuterDiv>
       <VideoController
-        duration={videoRef.current ? videoRef.current.duration : 0}
+        duration={videoRef?.current?.duration ? videoRef.current.duration : 0}
         isPlaying={isPlaying}
         handlePause={handlePause}
         handlePlay={handlePlay}
