@@ -3,6 +3,13 @@
 Implemented:
 [Hosted url](https://video-playlist-kappa.vercel.app/)
 
+### Instructions on how to run the application locally
+
+1. git clone https://github.com/Nandakumar47/VideoPlaylist.git
+2. cd VideoPlaylist\video-player
+3. npm install
+4. npm start
+
 ### Video Player Component:
 
 Implemented a video player with essential functionalities:
@@ -30,3 +37,4 @@ Implemented a video player with essential functionalities:
 
 1. Implemented volume control for video player, thumbnail previews, or search/filter functionality for the playlist
 2. Add keyboard shortcuts for keyboard warriors.
+3. Videos should continue playing from where users left-off.

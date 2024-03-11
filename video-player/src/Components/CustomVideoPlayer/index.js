@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import VideoController from "./VideoController";
 import { useVideoPlayerContext } from "../Context/store";
+import { addCurrentTime } from "../Context";
 const VideoPLayerOuterDiv = styled.div((props) => ({
   borderRadius: "16px",
   border: "1px solid lightgrey",
@@ -52,9 +53,11 @@ const CustomVideoPlayer = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showVolume, setShowVolume] = useState(true);
   const { state, dispatch } = useVideoPlayerContext();
-
   useEffect(() => {
     const video = videoRef.current;
+    if (state.previousTimeDurations[state.selectedVideo.id]) {
+      video.currentTime += state.previousTimeDurations[state.selectedVideo.id];
+    }
     const handleTimeUpdate = () => {
       setCurrentTime(video.currentTime);
     };
@@ -72,8 +75,14 @@ const CustomVideoPlayer = () => {
       video.removeEventListener("timeupdate", handleTimeUpdate);
       video.removeEventListener("play", handlePlay);
       video.removeEventListener("pause", handlePause);
+      if (state.selectedVideo.title) {
+        addCurrentTime(dispatch, {
+          [state.selectedVideo.id]: video.currentTime,
+        });
+      }
     };
   }, [videoRef, state.selectedVideo]);
+
   useEffect(() => {
     const handleKeyPress = (evt) => {
       switch (evt.code) {
@@ -160,11 +169,7 @@ const CustomVideoPlayer = () => {
     if (outerDivRef.current) {
       if (!document.fullscreenElement) {
         setIsFullScreen(true);
-        outerDivRef.current.requestFullscreen().catch((err) => {
-          console.log(
-            `Error attempting to enable full-screen mode: ${err.message}`
-          );
-        });
+        outerDivRef.current.requestFullscreen();
       } else {
         if (document.exitFullscreen) {
           setIsFullScreen(false);

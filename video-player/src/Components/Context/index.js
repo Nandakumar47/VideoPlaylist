@@ -1,2 +1,2 @@
-import { setSelectedVideo } from "./videoPlayerActions";
-export { setSelectedVideo };
+import { setSelectedVideo, addCurrentTime } from "./videoPlayerActions";
+export { setSelectedVideo, addCurrentTime };
