@@ -43,12 +43,20 @@ const CustomVideoPlayer = () => {
     const handleTimeUpdate = () => {
       setCurrentTime(video.currentTime);
     };
-    setIsPlaying(true);
+    const handlePlay = (evt) => {
+      setIsPlaying(true);
+    };
+    const handlePause = () => {
+      setIsPlaying(false);
+    };
     video.volume = 0;
     video.addEventListener("timeupdate", handleTimeUpdate);
-
+    video.addEventListener("play", handlePlay);
+    video.addEventListener("pause", handlePause);
     return () => {
       video.removeEventListener("timeupdate", handleTimeUpdate);
+      video.removeEventListener("play", handlePlay);
+      video.removeEventListener("pause", handlePause);
     };
   }, [videoRef, state.selectedVideo]);
   useEffect(() => {
@@ -102,7 +110,6 @@ const CustomVideoPlayer = () => {
     };
   }, [volume]);
   const handlePause = () => {
-    setIsPlaying(false);
     if (showVolumeBar) {
       setShowVolumeBar(false);
     }
@@ -110,7 +117,6 @@ const CustomVideoPlayer = () => {
   };
 
   const handlePlay = () => {
-    setIsPlaying(true);
     if (showVolumeBar) {
       setShowVolumeBar(false);
     }
