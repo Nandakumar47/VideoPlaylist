@@ -1,5 +1,11 @@
 import React from "react";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import styled from "styled-components";
+const VolumeBar = styled.div({
+  padding: "0 8px",
+  transition: "all 0.3s ease-out",
+  display: "flex",
+});
 function VideoVolume(props) {
   const { setShowVolumeBar, showVolumeBar, volume, handleVolumeChange } = props;
   return (
@@ -13,23 +19,17 @@ function VideoVolume(props) {
         <VolumeUpIcon />
       </button>
       {showVolumeBar ? (
-        <div
-          style={{
-            padding: "0 8px",
-            transition: "all 0.3s ease-out",
-            display: "flex",
-          }}
-        >
+        <VolumeBar>
           <input
             type="range"
             min="0"
             max="1"
             step="0.01"
             value={volume}
-            style={{ cursor: "pointer", transition: "all 0.3s ease-out" }}
+            style={{ cursor: "pointer" }}
             onChange={handleVolumeChange}
           />
-        </div>
+        </VolumeBar>
       ) : null}
     </div>
   );

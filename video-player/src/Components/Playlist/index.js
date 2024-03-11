@@ -4,6 +4,25 @@ import { mediaJSON } from "../../Constants";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useVideoPlayerContext } from "../Context/store";
 import { setSelectedVideo } from "../Context";
+import styled from "styled-components";
+const PlayListContainer = styled.div({
+  border: "1px solid lightgrey",
+  borderRadius: "8px",
+  paddingBottom: "8px",
+  padding: "16px",
+  background: "#FEFBF6",
+});
+const PlayListHeader = styled.h1({
+  fontSize: "1.1rem",
+  fontWeight: 600,
+  marginBottom: "8px",
+});
+
+const SearchInput = styled.input({
+  width: "100%",
+  border: "solid 1px grey",
+  padding: "8px 16px",
+});
 const Playlist = () => {
   const baseUrl =
     "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/";
@@ -31,33 +50,16 @@ const Playlist = () => {
     setPlaylists(searchResult);
   };
   return (
-    <div
-      style={{
-        border: "1px solid lightgrey",
-        borderRadius: "8px",
-        paddingBottom: "8px",
-        padding: "16px",
-        background: "#FEFBF6",
-      }}
-    >
+    <PlayListContainer>
       <div
         style={{
           paddingBottom: "16px",
         }}
       >
-        <h1
-          style={{ fontSize: "1.1rem", fontWeight: 600, marginBottom: "8px" }}
-        >
-          Playlist
-        </h1>
-        <input
+        <PlayListHeader>Playlist</PlayListHeader>
+        <SearchInput
           type="text"
           placeholder="Search"
-          style={{
-            width: "100%",
-            border: "solid 1px grey",
-            padding: "8px 16px",
-          }}
           onChange={(evt) => handleSearch(evt.target.value)}
         />
       </div>
@@ -110,7 +112,7 @@ const Playlist = () => {
           )}
         </Droppable>
       </DragDropContext>
-    </div>
+    </PlayListContainer>
   );
 };
 

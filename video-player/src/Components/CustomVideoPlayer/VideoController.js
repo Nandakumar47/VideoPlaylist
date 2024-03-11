@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
-
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import { formatTime } from "../Utils";
 import VideoPlaySpeed from "./VideoPlaySpeed";
@@ -14,9 +13,7 @@ const Container = styled.div({
   gap: "8px",
   marginTop: "8px",
 });
-const VideoOuterDiv = styled.div({
-  position: "relative",
-});
+
 const VideoController = (props) => {
   const {
     isPlaying,

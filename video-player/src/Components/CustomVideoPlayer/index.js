@@ -1,21 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-
 import VideoController from "./VideoController";
 import { useVideoPlayerContext } from "../Context/store";
 const VideoPLayerOuterDiv = styled.div((props) => ({
-  //   background: "transparent",
-  //   zIndex: 9999,
-  //   position: "relative",
-  //   ...(props.isFull && {
-  //     width: "100vw",
-  //     height: "100vh",
-  //     zIndex: 9999,
-  //     position: "relative",
-  //   }),
   borderRadius: "16px",
-  // background: "#ffffff",
-  // boxShadow: "20px 20px 56px #d9d9d9, -20px -20px 56px #ffffff",
   border: "1px solid lightgrey",
   padding: "16px",
   paddingBottom: "8px",
@@ -24,7 +12,34 @@ const VideoPLayerOuterDiv = styled.div((props) => ({
 const VideoOuterDiv = styled.div({
   position: "relative",
 });
-
+const VolumeDisplayContainer = styled.span({
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "60px",
+  height: "40px",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  border: "none",
+  color: "white",
+});
+const VolumeDisplayBackground = styled.span({
+  position: "absolute",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  opacity: 0.5,
+  background: "black",
+});
+const CustomPara = styled.p({
+  opacity: 1,
+  position: "relative",
+  zIndex: 1,
+  color: "white",
+});
 const CustomVideoPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const videoRef = useRef();
@@ -163,43 +178,10 @@ const CustomVideoPlayer = () => {
     <VideoPLayerOuterDiv ref={outerDivRef} $isFull={isFullScreen}>
       <VideoOuterDiv>
         {showVolume ? (
-          <span
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "60px",
-              height: "40px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              border: "none",
-              color: "white",
-            }}
-          >
-            <span
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                opacity: 0.5,
-                background: "black",
-              }}
-            ></span>
-            <p
-              style={{
-                opacity: 1,
-                position: "relative",
-                zIndex: 1,
-                color: "white",
-              }}
-            >
-              {Math.round((volume / 1) * 100)}%
-            </p>
-          </span>
+          <VolumeDisplayContainer>
+            <VolumeDisplayBackground></VolumeDisplayBackground>
+            <CustomPara>{Math.round((volume / 1) * 100)}%</CustomPara>
+          </VolumeDisplayContainer>
         ) : null}
         <video
           key={
